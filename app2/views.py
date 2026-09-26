@@ -2,6 +2,10 @@
 from django.http import JsonResponse
 from django.shortcuts import render # 💡 確保這行有在 views.py 開頭引入
 from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
+from google.genai import types
+import os
+
 from google import genai
 from app2.models import ChatLog # 💡 記得引入我們剛剛註冊成功的資料庫模型
 
@@ -19,10 +23,22 @@ def gemini_chat_api(request):
             ChatLog.objects.create(sender="user", content=user_message)
 
             # 呼叫大腦思考
-            client = genai.Client(api_key="AIzaSyBrhNSpLgIeJqcGr7_6wIeiQ0ONPDP4Pbs")
+            # 1. 取得當前台灣時間與日期
+            
+            now_taiwan = timezone.localtime(timezone.now())
+            today_str = now_taiwan.strftime("%Y 年 %m 月 %d 日 %A") 
+            
+            # 2. 設定系統指示，把今天日期灌進去
+            sys_instruction = f"你是AI 智慧助理。今天是 {today_str}。請務必根據這個日期精準回答時間、節日與天氣相關問題。"
+            
+            api_key = os.getenv("GEMINI_API_KEY")
+            client = genai.Client(api_key=api_key)
             response = client.models.generate_content(
                 model='gemini-2.5-flash',
                 contents=user_message,
+                config=types.GenerateContentConfig(
+                    system_instruction=sys_instruction,
+                )
             )
             
             ai_reply = response.text

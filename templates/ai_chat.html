@@ -6,8 +6,15 @@
     <!-- 引入簡單漂亮的樣式 -->
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; }
-        .chat-container { max-width: 600px; margin: 50px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .chat-box { height: 400px; border: 1px solid #ddd; padding: 15px; overflow-y: auto; border-radius: 5px; margin-bottom: 15px; background: #fafafa; }
+        .chat-container { width: 92%; 
+            max-width: 800px; 
+            margin: 20px auto; 
+            height: 80vh; 
+            display: flex; 
+            flex-direction: column;
+            background: white; 
+            padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .chat-box { flex: 1; border: 1px solid #ddd; padding: 15px; overflow-y: auto; border-radius: 5px; margin-bottom: 15px; background-color: #fafafa; }
         .message { margin-bottom: 15px; padding: 10px; border-radius: 5px; max-width: 80%; }
         .user-msg { background-color: #007bff; color: white; margin-left: auto; text-align: right; }
         .ai-msg { background-color: #e9ecef; color: #333; }
