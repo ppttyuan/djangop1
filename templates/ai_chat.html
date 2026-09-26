@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>我的 Django AI 助理</title>
+    <!-- 引入簡單漂亮的樣式 -->
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; }
+        .chat-container { max-width: 600px; margin: 50px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .chat-box { height: 400px; border: 1px solid #ddd; padding: 15px; overflow-y: auto; border-radius: 5px; margin-bottom: 15px; background: #fafafa; }
+        .message { margin-bottom: 15px; padding: 10px; border-radius: 5px; max-width: 80%; }
+        .user-msg { background-color: #007bff; color: white; margin-left: auto; text-align: right; }
+        .ai-msg { background-color: #e9ecef; color: #333; }
+        .input-area { display: flex; gap: 10px; }
+        input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <h2>🤖 我的 Django AI 智慧助理</h2>
+    
+    <!-- 聊天訊息顯示區 -->
+    <div class="chat-box" id="chatBox">
+        <div class="message ai-msg">你好！我是住在 Django 網頁裡的 Gemini AI。今天想聊點什麼?</div>
+
+        <!-- 💡 加上這段，自動撈出剛才 DBeaver 裡看到的舊對話 -->
+        {% for log in history_logs %}
+            {% if log.sender == "user" %}
+                <div class="message user-msg">{{ log.content }}</div>
+            {% else %}
+                <div class="message ai-msg">{{ log.content }}</div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+
+    <!-- 輸入打字區 -->
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="請輸入訊息..." onkeydown="if(event.keyCode==13) sendMsg()">
+        <button onclick="sendMsg()">送出</button>
+    </div>
+</div>
+
+<!-- 網頁 JavaScript：負責把打的字傳給 Django 後端 -->
+<script>
+function sendMsg() {
+    var inputField = document.getElementById("userInput");
+    var message = inputField.value.trim();
+    if (!message) return;
+
+    var chatBox = document.getElementById("chatBox");
+
+    // 1. 在網頁畫面上立刻顯示使用者剛剛打的字
+    chatBox.innerHTML += '<div class="message user-msg">' + message + '</div>';
+    inputField.value = "";
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // 2. 使用網頁標準的 FormData 包裹資料，送去我們昨天做好的 Django 網址
+    var formData = new FormData();
+    formData.append("message", message);
+
+    fetch("/api/chat/", {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        // 3. 收到 Django 回傳的 JSON (Unicode 會在這裡被自動解碼成繁體中文！)
+        if (data.reply) {
+            chatBox.innerHTML += '<div class="message ai-msg">' + data.reply + '</div>';
+        } else {
+            chatBox.innerHTML += '<div class="message ai-msg" style="color:red;">錯誤: ' + (data.error || "未知錯誤") + '</div>';
+        }
+        chatBox.scrollTop = chatBox.scrollHeight;
+    })
+    .catch(error => {
+        chatBox.innerHTML += '<div class="message ai-msg" style="color:red;">連線失敗，請檢查後端</div>';
+    });
+}
+</script>
+
+</body>
+</html>
