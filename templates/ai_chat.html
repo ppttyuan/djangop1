@@ -2,19 +2,26 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
+    <!-- 加入下面這行控制手機縮放比例 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的 Django AI 助理</title>
     <!-- 引入簡單漂亮的樣式 -->
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; }
-        .chat-container { width: 92%; 
-            max-width: 800px; 
-            margin: 20px auto; 
-            height: 80vh; 
-            display: flex; 
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 10px; font-size: 16px; }
+
+        .chat-container { 
+            width: 92%;
+            max-width: 800px;
+            margin: 20px auto;
+            height: 80vh;
+            display: flex;
             flex-direction: column;
-            background: white; 
-            padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .chat-box { flex: 1; border: 1px solid #ddd; padding: 15px; overflow-y: auto; border-radius: 5px; margin-bottom: 15px; background-color: #fafafa; }
+            background: white;
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+        }
+        .chat-box { flex: 1; font-size: 15px; border: 1px solid #ddd; padding: 15px; overflow-y: auto; border-radius: 5px; margin-bottom: 15px; background-color: #fafafa; }
         .message { margin-bottom: 15px; padding: 10px; border-radius: 5px; max-width: 80%; }
         .user-msg { background-color: #007bff; color: white; margin-left: auto; text-align: right; }
         .ai-msg { background-color: #e9ecef; color: #333; }
@@ -27,7 +34,7 @@
 <body>
 
 <div class="chat-container">
-    <h2>🤖 我的 Django AI 智慧助理</h2>
+    <h2>我的 Django AI 智慧助理</h2>
     
     <!-- 聊天訊息顯示區 -->
     <div class="chat-box" id="chatBox">
